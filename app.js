@@ -1,6 +1,7 @@
 // Meal Plan Tracker — rendering + tick-off logic
 
 const STORAGE_KEY = "mealplan-checks-v1";
+const OVERRIDE_KEY = "mealplan-overrides-v1";
 
 function loadChecks() {
   try {
@@ -26,6 +27,37 @@ function toggleChecked(dateKey, slot) {
   saveChecks(checks);
 }
 
+function loadOverrides() {
+  try {
+    return JSON.parse(localStorage.getItem(OVERRIDE_KEY)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveOverrides(overrides) {
+  localStorage.setItem(OVERRIDE_KEY, JSON.stringify(overrides));
+}
+
+let overrides = loadOverrides();
+
+function getOverride(dateKey, slot) {
+  return (overrides[dateKey] && overrides[dateKey][slot]) || null;
+}
+
+function setOverride(dateKey, slot, source, id) {
+  if (!overrides[dateKey]) overrides[dateKey] = {};
+  overrides[dateKey][slot] = { source, id };
+  saveOverrides(overrides);
+}
+
+function clearOverride(dateKey, slot) {
+  if (overrides[dateKey]) {
+    delete overrides[dateKey][slot];
+    saveOverrides(overrides);
+  }
+}
+
 function toISODate(date) {
   const y = date.getFullYear();
   const m = String(date.getMonth() + 1).padStart(2, "0");
@@ -45,27 +77,66 @@ function mondayOf(date) {
   return monday;
 }
 
+// Resolve an ISO date string ("2026-07-27") back to its weekday row in DAYS
+function dayForDateKey(dateKey) {
+  const [y, m, d] = dateKey.split("-").map(Number);
+  const date = new Date(y, m - 1, d);
+  return DAYS[dayIndexFor(date)];
+}
+
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
   return div.innerHTML;
 }
 
-function recipeFor(mealDef) {
-  if (mealDef.recipe) return RECIPES[mealDef.recipe];
-  if (mealDef.snack) return SNACKS[mealDef.snack];
-  return null;
+function itemFor(source, id) {
+  if (source === "snack") return SNACKS[id];
+  return RECIPES[id] || ALTERNATES[id];
 }
 
-function renderMealCard(dateKey, slot, mealDef) {
-  const recipe = recipeFor(mealDef);
+// What's actually showing for this date/slot: an override if one was chosen, else the plan's default
+function effectiveRef(dateKey, slot, defaultMealDef) {
+  const override = getOverride(dateKey, slot);
+  if (override) return { source: override.source, id: override.id, isOverridden: true };
+  const source = defaultMealDef.recipe ? "recipe" : "snack";
+  const id = defaultMealDef.recipe || defaultMealDef.snack;
+  return { source, id, isOverridden: false };
+}
+
+const SWAP_GROUPS = [
+  { label: "Mains", source: "recipe", items: RECIPES },
+  { label: "Alternates", source: "recipe", items: ALTERNATES },
+  { label: "Snacks", source: "snack", items: SNACKS },
+];
+
+function swapOptionsHtml(selectedValue) {
+  const groupsHtml = SWAP_GROUPS.map((group) => {
+    const opts = Object.entries(group.items)
+      .map(([id, item]) => {
+        const value = `${group.source}:${id}`;
+        const sel = value === selectedValue ? " selected" : "";
+        return `<option value="${value}"${sel}>${escapeHtml(item.title)}</option>`;
+      })
+      .join("");
+    return `<optgroup label="${group.label}">${opts}</optgroup>`;
+  }).join("");
+  return `<option value="reset">↺ Use planned meal</option>${groupsHtml}`;
+}
+
+function renderMealCard(dateKey, slot, defaultMealDef) {
+  const ref = effectiveRef(dateKey, slot, defaultMealDef);
+  const recipe = itemFor(ref.source, ref.id);
   if (!recipe) return "";
   const checked = isChecked(dateKey, slot);
-  const leftoverNote = mealDef.leftoverFrom
-    ? `<div class="leftover-note">🔁 leftover from ${mealDef.leftoverFrom}</div>`
+  const leftoverNote = !ref.isOverridden && defaultMealDef.leftoverFrom
+    ? `<div class="leftover-note">🔁 leftover from ${defaultMealDef.leftoverFrom}</div>`
     : "";
-  const extraNote = mealDef.note ? `<div class="meal-note">${escapeHtml(mealDef.note)}</div>` : "";
+  const extraNote = !ref.isOverridden && defaultMealDef.note
+    ? `<div class="meal-note">${escapeHtml(defaultMealDef.note)}</div>`
+    : "";
   const batchNote = recipe.note ? `<div class="meal-note">${escapeHtml(recipe.note)}</div>` : "";
+  const swappedNote = ref.isOverridden ? `<div class="swapped-note">✏️ swapped in, not the planned meal</div>` : "";
 
   const ingredientsHtml = recipe.ingredients
     .map((i) => `<li>${escapeHtml(i)}</li>`)
@@ -73,6 +144,8 @@ function renderMealCard(dateKey, slot, mealDef) {
   const methodHtml = recipe.method
     ? `<p class="method"><strong>Method:</strong> ${escapeHtml(recipe.method)}</p>`
     : "";
+
+  const selectedValue = `${ref.source}:${ref.id}`;
 
   return `
     <div class="meal-card ${checked ? "checked" : ""}">
@@ -83,6 +156,12 @@ function renderMealCard(dateKey, slot, mealDef) {
       </label>
       ${leftoverNote}
       ${extraNote}
+      ${swappedNote}
+      <div class="swap-row">
+        <select class="meal-swap-select" data-date="${dateKey}" data-slot="${slot}" aria-label="Swap ${SLOT_LABELS[slot]}">
+          ${swapOptionsHtml(selectedValue)}
+        </select>
+      </div>
       <details class="recipe-details">
         <summary>Recipe</summary>
         ${batchNote}
@@ -160,7 +239,7 @@ function renderRecipeCard(recipe) {
 function renderRecipes() {
   const mains = Object.values(RECIPES).map(renderRecipeCard).join("");
   const snacks = Object.values(SNACKS).map(renderRecipeCard).join("");
-  const alternates = ALTERNATES.map(renderRecipeCard).join("");
+  const alternates = Object.values(ALTERNATES).map(renderRecipeCard).join("");
   document.getElementById("view").innerHTML = `
     <section class="recipe-group">
       <h2 class="day-heading">Mains</h2>
@@ -201,6 +280,19 @@ document.addEventListener("change", (e) => {
     toggleChecked(date, slot);
     const card = e.target.closest(".meal-card");
     if (card) card.classList.toggle("checked", e.target.checked);
+  }
+
+  if (e.target.classList.contains("meal-swap-select")) {
+    const { date, slot } = e.target.dataset;
+    if (e.target.value === "reset") {
+      clearOverride(date, slot);
+    } else {
+      const [source, id] = e.target.value.split(":");
+      setOverride(date, slot, source, id);
+    }
+    const defaultMealDef = dayForDateKey(date).meals[slot];
+    const card = e.target.closest(".meal-card");
+    if (card) card.outerHTML = renderMealCard(date, slot, defaultMealDef);
   }
 });
 

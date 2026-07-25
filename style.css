@@ -159,6 +159,27 @@ main {
   margin: 8px 0 0 32px;
 }
 
+.swapped-note {
+  font-size: 0.8rem;
+  color: var(--accent);
+  margin: 6px 0 0 32px;
+}
+
+.swap-row {
+  margin: 8px 0 0 32px;
+}
+
+.meal-swap-select {
+  font-family: inherit;
+  font-size: 0.82rem;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 5px 8px;
+  max-width: 100%;
+}
+
 .recipe-details summary {
   cursor: pointer;
   color: var(--accent);

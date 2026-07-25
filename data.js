@@ -165,20 +165,20 @@ const SNACKS = {
   almondsApple: { title: "Almonds + apple", ingredients: ["25g almonds", "1 apple"] },
 };
 
-const ALTERNATES = [
-  {
+const ALTERNATES = {
+  quinoaBowl: {
     title: "Quinoa Bowl",
     ingredients: ["Quinoa: 60g dry", "Roasted vegetables: 150g", "Chickpeas: 100g", "Feta: 30g", "Tahini-lemon dressing: 1 tbsp tahini + 1 tbsp lemon juice, thinned with water"],
   },
-  {
+  halloumiGrainBowl: {
     title: "Halloumi & Roasted Vegetable Grain Bowl",
     ingredients: ["Halloumi: 80g, sliced and pan-fried", "Grain (bulgur/farro/quinoa): 60g dry", "Roasted vegetables: 150g", "Rocket: 50g", "Olive oil + balsamic glaze"],
   },
-  {
+  veggieBeanChili: {
     title: "Veggie & Bean Chili",
     ingredients: ["Kidney/black beans: 200g", "Tinned tomatoes: 200g", "Onion: ½", "Pepper: 1", "Garlic: 1 clove", "Chili powder + cumin: 1 tsp each", "Greek yogurt: 2 tbsp, to top"],
   },
-];
+};
 
 // getDay(): Sun=0..Sat=6 — DAYS is ordered Mon..Sun, so index = (getDay()+6)%7
 const DAYS = [
