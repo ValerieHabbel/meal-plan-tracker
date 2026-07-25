@@ -1,0 +1,12 @@
+{
+  "name": "Meal Plan",
+  "short_name": "Meal Plan",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#faf8f5",
+  "theme_color": "#4a7c59",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
