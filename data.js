@@ -158,11 +158,13 @@ const RECIPES = {
 const SNACKS = {
   yogurtBerries: { title: "Greek yogurt + berries", ingredients: ["150g yogurt", "60g berries", "small handful granola"] },
   proteinShake: { title: "Protein shake + banana", ingredients: ["1 scoop protein powder", "water or milk", "1 banana", "handful granola"] },
+  yogurtBananaGranola: { title: "Greek yogurt + banana + granola", ingredients: ["150-200g Greek yogurt", "1 banana", "handful granola"] },
   cottageCheese: { title: "Cottage cheese + cucumber", ingredients: ["150g cottage cheese", "sliced cucumber", "few rice cakes"] },
   edamame: { title: "Edamame", ingredients: ["100g shelled, steamed"] },
   yogurtHoney: { title: "Greek yogurt + honey", ingredients: ["150g yogurt", "1 tsp honey"] },
   hummus: { title: "Hummus + veg sticks", ingredients: ["60g hummus", "carrot/pepper sticks"] },
   almondsApple: { title: "Almonds + apple", ingredients: ["25g almonds", "1 apple"] },
+  cottageCheeseApple: { title: "Cottage cheese + apple", ingredients: ["150-200g cottage cheese", "1 apple"] },
 };
 
 const ALTERNATES = {
@@ -180,6 +182,9 @@ const ALTERNATES = {
   },
 };
 
+// Per-meal macros below are from the "protein-boosted" version of the plan
+// (yogurt added in place of shakes, extra egg/feta on some days) — estimates,
+// not lab-precise.
 // getDay(): Sun=0..Sat=6 — DAYS is ordered Mon..Sun, so index = (getDay()+6)%7
 const DAYS = [
   {
@@ -188,10 +193,10 @@ const DAYS = [
     activity: "WFH, strength training",
     targets: { kcal: 1800, protein: 150, carbs: 180, fat: 55 },
     meals: {
-      breakfast: { recipe: "oats", note: "60g oats" },
-      lunch: { recipe: "lentilSoup" },
-      dinner: { recipe: "tofuStirFry" },
-      snack: { snack: "yogurtBerries" },
+      breakfast: { recipe: "oats", note: "60g oats + Greek yogurt", macros: { kcal: 560, protein: 49, carbs: 73, fat: 8 } },
+      lunch: { recipe: "lentilSoup", note: "+ egg + 60g feta (boosted)", macros: { kcal: 650, protein: 39, carbs: 68, fat: 20 } },
+      dinner: { recipe: "tofuStirFry", note: "180g tofu", macros: { kcal: 565, protein: 32, carbs: 66, fat: 17.5 } },
+      snack: { snack: "yogurtBerries", macros: { kcal: 185, protein: 17, carbs: 23, fat: 2 } },
     },
   },
   {
@@ -200,10 +205,10 @@ const DAYS = [
     activity: "Office, 70min cycling + 90min rowing — big day",
     targets: { kcal: 2800, protein: 150, carbs: 410, fat: 60 },
     meals: {
-      breakfast: { recipe: "oats", note: "70g oats + extra fruit" },
-      lunch: { recipe: "bigSalad", note: "extra egg + slice of bread" },
-      dinner: { recipe: "salmonDinner" },
-      snack: { snack: "proteinShake" },
+      breakfast: { recipe: "oats", note: "70g oats + extra fruit + yogurt", macros: { kcal: 705, protein: 60.5, carbs: 96, fat: 9 } },
+      lunch: { recipe: "bigSalad", note: "extra egg + slice of bread", macros: { kcal: 665, protein: 32, carbs: 75, fat: 29 } },
+      dinner: { recipe: "salmonDinner", note: "bigger potatoes + bread", macros: { kcal: 810, protein: 41, carbs: 91, fat: 31.5 } },
+      snack: { snack: "yogurtBananaGranola", macros: { kcal: 342, protein: 28, carbs: 50, fat: 3 } },
     },
   },
   {
@@ -212,10 +217,10 @@ const DAYS = [
     activity: "WFH, strength training, 30min cycling",
     targets: { kcal: 2000, protein: 150, carbs: 220, fat: 55 },
     meals: {
-      breakfast: { recipe: "oats", note: "60g oats" },
-      lunch: { recipe: "tofuStirFry", leftoverFrom: "Monday" },
-      dinner: { recipe: "whiteBeanStew" },
-      snack: { snack: "cottageCheese" },
+      breakfast: { recipe: "oats", note: "60g oats + Greek yogurt", macros: { kcal: 560, protein: 49, carbs: 73, fat: 8 } },
+      lunch: { recipe: "tofuStirFry", leftoverFrom: "Monday", macros: { kcal: 565, protein: 32, carbs: 66, fat: 17.5 } },
+      dinner: { recipe: "whiteBeanStew", note: "boosted", macros: { kcal: 610, protein: 35, carbs: 84, fat: 15 } },
+      snack: { snack: "cottageCheese", macros: { kcal: 200, protein: 19, carbs: 22, fat: 3 } },
     },
   },
   {
@@ -224,10 +229,10 @@ const DAYS = [
     activity: "Different office, 30min cycling",
     targets: { kcal: 1750, protein: 150, carbs: 165, fat: 55 },
     meals: {
-      breakfast: { recipe: "oats", note: "50g oats" },
-      lunch: { recipe: "whiteBeanStew", leftoverFrom: "Wednesday" },
-      dinner: { recipe: "shrimpPasta" },
-      snack: { snack: "edamame" },
+      breakfast: { recipe: "oats", note: "50g oats + Greek yogurt", macros: { kcal: 523, protein: 47.7, carbs: 67, fat: 7.3 } },
+      lunch: { recipe: "whiteBeanStew", leftoverFrom: "Wednesday", macros: { kcal: 610, protein: 35, carbs: 84, fat: 15 } },
+      dinner: { recipe: "shrimpPasta", note: "200g shrimp (boosted)", macros: { kcal: 630, protein: 48, carbs: 65, fat: 17 } },
+      snack: { snack: "edamame", macros: { kcal: 120, protein: 11, carbs: 9, fat: 5 } },
     },
   },
   {
@@ -236,10 +241,10 @@ const DAYS = [
     activity: "Office, 50min cycling",
     targets: { kcal: 1900, protein: 150, carbs: 195, fat: 55 },
     meals: {
-      breakfast: { recipe: "oats", note: "60g oats" },
-      lunch: { recipe: "bigSalad", note: "+ 30g feta" },
-      dinner: { recipe: "bakedCod" },
-      snack: { snack: "yogurtHoney" },
+      breakfast: { recipe: "oats", note: "60g oats + Greek yogurt", macros: { kcal: 560, protein: 49, carbs: 73, fat: 8 } },
+      lunch: { recipe: "bigSalad", note: "+ 2 eggs + 40g feta", macros: { kcal: 610, protein: 32, carbs: 58, fat: 30 } },
+      dinner: { recipe: "bakedCod", macros: { kcal: 450, protein: 36, carbs: 46, fat: 15.5 } },
+      snack: { snack: "yogurtHoney", macros: { kcal: 110, protein: 15, carbs: 11, fat: 0 } },
     },
   },
   {
@@ -248,10 +253,10 @@ const DAYS = [
     activity: "Strength training, 30min cycling",
     targets: { kcal: 2000, protein: 150, carbs: 220, fat: 55 },
     meals: {
-      breakfast: { recipe: "oats", note: "60g oats" },
-      lunch: { recipe: "whiteBeanEggFetaSalad" },
-      dinner: { recipe: "tofuCurry" },
-      snack: { snack: "hummus" },
+      breakfast: { recipe: "oats", note: "60g oats + Greek yogurt", macros: { kcal: 560, protein: 49, carbs: 73, fat: 8 } },
+      lunch: { recipe: "whiteBeanEggFetaSalad", note: "boosted", macros: { kcal: 715, protein: 37, carbs: 60, fat: 35.7 } },
+      dinner: { recipe: "tofuCurry", note: "180g tofu", macros: { kcal: 650, protein: 36, carbs: 73, fat: 24 } },
+      snack: { snack: "hummus", macros: { kcal: 205, protein: 6, carbs: 17, fat: 12 } },
     },
   },
   {
@@ -260,10 +265,10 @@ const DAYS = [
     activity: "Rest day",
     targets: { kcal: 1600, protein: 150, carbs: 130, fat: 50 },
     meals: {
-      breakfast: { recipe: "oats", note: "50g oats" },
-      lunch: { recipe: "whiteBeanEggFetaSalad", leftoverFrom: "Saturday" },
-      dinner: { recipe: "tofuCurry", leftoverFrom: "Saturday" },
-      snack: { snack: "almondsApple" },
+      breakfast: { recipe: "oats", note: "50g oats + Greek yogurt", macros: { kcal: 523, protein: 47.7, carbs: 67, fat: 7.3 } },
+      lunch: { recipe: "whiteBeanEggFetaSalad", leftoverFrom: "Saturday", macros: { kcal: 715, protein: 37, carbs: 60, fat: 35.7 } },
+      dinner: { recipe: "tofuCurry", leftoverFrom: "Saturday", macros: { kcal: 650, protein: 36, carbs: 73, fat: 24 } },
+      snack: { snack: "cottageCheeseApple", macros: { kcal: 215, protein: 18.5, carbs: 30, fat: 3 } },
     },
   },
 ];

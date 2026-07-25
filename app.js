@@ -77,13 +77,6 @@ function mondayOf(date) {
   return monday;
 }
 
-// Resolve an ISO date string ("2026-07-27") back to its weekday row in DAYS
-function dayForDateKey(dateKey) {
-  const [y, m, d] = dateKey.split("-").map(Number);
-  const date = new Date(y, m - 1, d);
-  return DAYS[dayIndexFor(date)];
-}
-
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
@@ -95,13 +88,39 @@ function itemFor(source, id) {
   return RECIPES[id] || ALTERNATES[id];
 }
 
-// What's actually showing for this date/slot: an override if one was chosen, else the plan's default
+// What's actually showing for this date/slot: an override if one was chosen, else the plan's default.
+// Macros are only known for the plan's default meals (that's what the source data provides) — a
+// swapped-in meal shows as having untracked macros rather than a guessed number.
 function effectiveRef(dateKey, slot, defaultMealDef) {
   const override = getOverride(dateKey, slot);
-  if (override) return { source: override.source, id: override.id, isOverridden: true };
+  if (override) return { source: override.source, id: override.id, isOverridden: true, macros: null };
   const source = defaultMealDef.recipe ? "recipe" : "snack";
   const id = defaultMealDef.recipe || defaultMealDef.snack;
-  return { source, id, isOverridden: false };
+  return { source, id, isOverridden: false, macros: defaultMealDef.macros || null };
+}
+
+function round1(n) {
+  return Math.round(n * 10) / 10;
+}
+
+function computeDayMacros(dateKey, day) {
+  const total = { kcal: 0, protein: 0, carbs: 0, fat: 0 };
+  const missing = [];
+  MEAL_SLOTS.forEach((slot) => {
+    const ref = effectiveRef(dateKey, slot, day.meals[slot]);
+    if (ref.macros) {
+      total.kcal += ref.macros.kcal;
+      total.protein += ref.macros.protein;
+      total.carbs += ref.macros.carbs;
+      total.fat += ref.macros.fat;
+    } else {
+      missing.push(SLOT_LABELS[slot]);
+    }
+  });
+  return {
+    total: { kcal: round1(total.kcal), protein: round1(total.protein), carbs: round1(total.carbs), fat: round1(total.fat) },
+    missing,
+  };
 }
 
 const SWAP_GROUPS = [
@@ -137,6 +156,9 @@ function renderMealCard(dateKey, slot, defaultMealDef) {
     : "";
   const batchNote = recipe.note ? `<div class="meal-note">${escapeHtml(recipe.note)}</div>` : "";
   const swappedNote = ref.isOverridden ? `<div class="swapped-note">✏️ swapped in, not the planned meal</div>` : "";
+  const macroChip = ref.macros
+    ? `<div class="macro-chip">${ref.macros.kcal} kcal · ${ref.macros.protein}g protein · ${ref.macros.carbs}g carbs · ${ref.macros.fat}g fat</div>`
+    : `<div class="macro-chip macro-chip-unknown">macros not tracked for this swap</div>`;
 
   const ingredientsHtml = recipe.ingredients
     .map((i) => `<li>${escapeHtml(i)}</li>`)
@@ -154,6 +176,7 @@ function renderMealCard(dateKey, slot, defaultMealDef) {
         <span class="slot-label">${SLOT_LABELS[slot]}</span>
         <span class="meal-title">${escapeHtml(recipe.title)}</span>
       </label>
+      ${macroChip}
       ${leftoverNote}
       ${extraNote}
       ${swappedNote}
@@ -172,13 +195,16 @@ function renderMealCard(dateKey, slot, defaultMealDef) {
   `;
 }
 
-function renderMacroBar(targets) {
+function renderMacroBar(label, macros) {
   return `
-    <div class="macro-bar">
-      <div class="macro"><span class="macro-value">${targets.kcal}</span><span class="macro-label">kcal</span></div>
-      <div class="macro"><span class="macro-value">${targets.protein}g</span><span class="macro-label">protein</span></div>
-      <div class="macro"><span class="macro-value">${targets.carbs}g</span><span class="macro-label">carbs</span></div>
-      <div class="macro"><span class="macro-value">${targets.fat}g</span><span class="macro-label">fat</span></div>
+    <div class="macro-bar-group">
+      <span class="macro-bar-label">${escapeHtml(label)}</span>
+      <div class="macro-bar">
+        <div class="macro"><span class="macro-value">${macros.kcal}</span><span class="macro-label">kcal</span></div>
+        <div class="macro"><span class="macro-value">${macros.protein}g</span><span class="macro-label">protein</span></div>
+        <div class="macro"><span class="macro-value">${macros.carbs}g</span><span class="macro-label">carbs</span></div>
+        <div class="macro"><span class="macro-value">${macros.fat}g</span><span class="macro-label">fat</span></div>
+      </div>
     </div>
   `;
 }
@@ -186,11 +212,17 @@ function renderMacroBar(targets) {
 function renderDaySection(day, dateKey, showDate) {
   const dateLabel = showDate ? ` <span class="date-label">${dateKey}</span>` : "";
   const cards = MEAL_SLOTS.map((slot) => renderMealCard(dateKey, slot, day.meals[slot])).join("");
+  const { total, missing } = computeDayMacros(dateKey, day);
+  const missingNote = missing.length
+    ? `<p class="macro-missing-note">⚠ ${missing.join(", ")} swapped to something without tracked macros — total below excludes ${missing.length > 1 ? "them" : "it"}.</p>`
+    : "";
   return `
     <section class="day-section">
       <h2 class="day-heading">${day.name}${dateLabel}</h2>
       <p class="activity">${escapeHtml(day.activity)}</p>
-      ${renderMacroBar(day.targets)}
+      ${renderMacroBar("Target", day.targets)}
+      ${renderMacroBar("Planned meals", total)}
+      ${missingNote}
       <div class="meal-cards">${cards}</div>
     </section>
   `;
@@ -290,9 +322,8 @@ document.addEventListener("change", (e) => {
       const [source, id] = e.target.value.split(":");
       setOverride(date, slot, source, id);
     }
-    const defaultMealDef = dayForDateKey(date).meals[slot];
-    const card = e.target.closest(".meal-card");
-    if (card) card.outerHTML = renderMealCard(date, slot, defaultMealDef);
+    // Full re-render (not just this card) since the day's macro total needs to update too
+    VIEWS[currentView]();
   }
 });
 

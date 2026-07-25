@@ -71,11 +71,39 @@ main {
   font-size: 0.9rem;
 }
 
+.macro-bar-group {
+  margin-bottom: 12px;
+}
+
+.macro-bar-label {
+  display: block;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
 .macro-bar {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
   overflow-x: auto;
+}
+
+.macro-missing-note {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin: -4px 0 12px;
+}
+
+.macro-chip {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin: 4px 0 0 32px;
+}
+
+.macro-chip-unknown {
+  font-style: italic;
 }
 
 .macro {
