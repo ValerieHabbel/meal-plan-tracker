@@ -7,13 +7,15 @@ const RECIPES = {
     servings: 1,
     ingredients: [
       "Oats: 50g (rest days) / 60g (training/cycling days) / 70g (Tuesday)",
-      "Protein powder: 1 scoop, ~25-30g",
-      "Milk or unsweetened soy milk: 180ml",
+      "Greek yogurt: 1 scoop-equivalent, ~150-200g (protein boost, replaces protein powder)",
+      "Milk or unsweetened soy milk: 150-180ml",
       "Fruit: ~80-100g (a banana, or a handful of berries)",
       "Optional: 1 tsp chia or flax seeds",
     ],
     method:
-      "Combine oats, protein powder, and milk in a jar. Stir well so the powder doesn't clump. Top with fruit (fresh fruit can go in the night before or added in the morning — berries hold up fine overnight, banana is better added fresh). Seeds can go in with the oats. Refrigerate overnight.",
+      "Combine oats, yogurt, and milk in a jar. Stir well. Top with fruit (fresh fruit can go in the night before or added in the morning — berries hold up fine overnight, banana is better added fresh). Seeds can go in with the oats. Refrigerate overnight.",
+    macros: { kcal: 560, protein: 49, carbs: 73, fat: 8 },
+    macroNote: "for the 60g-oats portion — scales up/down with oat quantity, see the day view for that day's exact figure",
   },
   bigSalad: {
     title: "Big Salad (Tue/Fri office days)",
@@ -21,15 +23,17 @@ const RECIPES = {
     ingredients: [
       "Chickpeas, cooked/canned, drained: 150g",
       "Cooked beetroot: 80g, diced",
-      "Egg: 1 large, boiled (add a 2nd egg on Tuesday)",
+      "Egg: 1 large, boiled (add a 2nd egg on Tuesday and Friday)",
       "Mixed salad greens: 100g",
       "Extra vegetables (cucumber, tomato, pepper): ~100g, chopped",
       "Olive oil: 1 tbsp (15ml)",
       "Lemon juice or vinegar: 1 tbsp",
-      "On Fri: add 30g feta, crumbled",
+      "On Fri: add 40g feta, crumbled",
     ],
     method:
       "Toss greens, chickpeas, beetroot, and chopped vegetables together. Top with halved boiled egg(s). Whisk olive oil and lemon juice/vinegar, drizzle over. On Tuesday, add a slice of bread (40g) or a small cooked grain portion (60g cooked) on the side.",
+    macros: { kcal: 610, protein: 32, carbs: 58, fat: 30 },
+    macroNote: "for the Friday version (2 eggs + 40g feta) — Tuesday's version (extra egg + bread) runs higher, see the day view for that figure",
   },
   lentilSoup: {
     title: "Lentil Soup + Feta (Mon)",
@@ -40,11 +44,12 @@ const RECIPES = {
       "Onion: ½, diced",
       "Carrot: 1, diced",
       "Garlic: 1 clove, minced",
-      "Feta: 30g, crumbled on top",
-      "Bread: 1 slice (40g)",
+      "Feta: 60g, crumbled on top",
+      "Egg: 1, boiled",
     ],
     method:
-      "Sauté onion, carrot, and garlic in a little olive oil until soft. Add lentils and stock, simmer 20-25 min until lentils are tender. Blend partially or leave chunky. Top with feta, serve with bread.",
+      "Sauté onion, carrot, and garlic in a little olive oil until soft. Add lentils and stock, simmer 20-25 min until lentils are tender. Blend partially or leave chunky. Top with feta and the boiled egg.",
+    macros: { kcal: 650, protein: 39, carbs: 68, fat: 20 },
   },
   tofuStirFry: {
     title: "Tofu & Vegetable Stir-Fry with Rice (Mon — cook double)",
@@ -61,6 +66,7 @@ const RECIPES = {
     ],
     method:
       "Cook rice per package instructions — enough for both servings. Pan-fry tofu cubes in a little oil until golden on most sides, set aside. Stir-fry vegetables with garlic and ginger 4-5 min until just tender. Return tofu to pan, add soy sauce and sesame oil, toss to coat. Split stir-fry and rice into two portions; refrigerate one for Wednesday (reheats well, or eat cold as a rice-bowl-style lunch).",
+    macros: { kcal: 565, protein: 32, carbs: 66, fat: 17.5 },
   },
   salmonDinner: {
     title: "Salmon, Roasted Potatoes & Greens (Tue — bigger portion)",
@@ -75,11 +81,12 @@ const RECIPES = {
     ],
     method:
       "Toss potato wedges in olive oil, roast at 200°C for 30-35 min, turning halfway. Season salmon and bake or pan-sear (bake: 200°C for 12-15 min; pan: 4 min skin-side down, 2-3 min other side). Steam or sauté greens. Serve together with a lemon wedge.",
+    macros: { kcal: 810, protein: 41, carbs: 91, fat: 31.5 },
   },
   whiteBeanStew: {
     title: "White Bean & Vegetable Stew with Parmesan (Wed — cook double)",
     servings: 2,
-    note: "Makes 2 servings — eat one Wednesday, refrigerate the other for Thursday's lunch.",
+    note: "Makes 2 servings — eat one Wednesday, refrigerate the other for Thursday's lunch. Boosted slightly (more beans/parmesan) versus the original for extra protein.",
     ingredients: [
       "White beans (cannellini or butter beans), cooked/canned: 400g total (200g/serving)",
       "Tinned tomatoes: 400g total (200g/serving)",
@@ -92,12 +99,13 @@ const RECIPES = {
     ],
     method:
       "Sauté onion, celery, carrot, and garlic until softened. Add tomatoes and beans, simmer 15-20 min until thickened — enough for both servings. Season well. Split into two containers, top each with parmesan. Refrigerate one for Thursday (reheats well; stews often taste better the next day).",
+    macros: { kcal: 610, protein: 35, carbs: 84, fat: 15 },
   },
   shrimpPasta: {
     title: "Shrimp & Vegetable Pasta (Thu)",
     servings: 1,
     ingredients: [
-      "Shrimp/prawns, raw, peeled: 150g",
+      "Shrimp/prawns, raw, peeled: 200g",
       "Whole wheat pasta, dry: 85g",
       "Cherry tomatoes: 100g, halved",
       "Garlic: 1-2 cloves, minced",
@@ -107,6 +115,7 @@ const RECIPES = {
     ],
     method:
       "Cook pasta per package instructions. Meanwhile, sauté garlic in olive oil, add shrimp and cook 2-3 min per side until pink. Add tomatoes and spinach/courgette, cook until tomatoes soften and greens wilt. Toss with drained pasta.",
+    macros: { kcal: 630, protein: 48, carbs: 65, fat: 17 },
   },
   bakedCod: {
     title: "Baked Cod, Roasted Vegetables & Wild Rice (Fri)",
@@ -120,24 +129,26 @@ const RECIPES = {
     ],
     method:
       "Cook wild rice per package instructions (usually 25-40 min). Toss vegetables in olive oil, roast at 200°C for 20-25 min. Season cod, bake at 200°C for 12-15 min until opaque and flakes easily. Serve together with lemon.",
+    macros: { kcal: 450, protein: 36, carbs: 46, fat: 15.5 },
   },
   whiteBeanEggFetaSalad: {
     title: "White Bean, Egg & Feta Salad (Sat — cook double)",
     servings: 2,
-    note: "Makes 2 servings — eat one Saturday, refrigerate the other for Sunday.",
+    note: "Makes 2 servings — eat one Saturday, refrigerate the other for Sunday. No bread; beans and feta doubled versus the original, olive oil cut back, for more protein without the extra carbs/fat.",
     ingredients: [
-      "White beans (cannellini), cooked/canned: 240g total (120g/serving)",
+      "White beans (cannellini), cooked/canned: 480g total (240g/serving)",
       "Eggs: 2, boiled (1/serving)",
-      "Feta: 80g total (40g/serving)",
+      "Feta (reduced-fat if available): 160g total (80g/serving)",
       "Mixed salad leaves: 160g total (80g/serving)",
       "Cherry tomatoes: 160g total (80g/serving), halved",
       "Red onion: ½, thinly sliced (split across both)",
-      "Olive oil: 2 tbsp total",
+      "Olive oil: 1 tbsp total",
       "Red wine vinegar: 2 tbsp total",
-      "Bread: 1 slice per serving (40g)",
     ],
     method:
       "Combine beans, tomatoes, onion, and leaves in a large bowl — enough for both servings. Boil eggs (8-9 min for a slightly firm yolk), halve. Dress with olive oil and vinegar, toss. Split into two containers, top each with 1 egg and half the feta. Store the second portion in the fridge (add the dressing fresh to that one if you can, so the leaves don't wilt overnight — or dress just before eating).",
+    macros: { kcal: 600, protein: 44, carbs: 61, fat: 20 },
+    macroNote: "estimated for the no-bread, double-beans-and-feta, reduced-oil version",
   },
   tofuCurry: {
     title: "Tofu Curry with Brown Rice (Sat — cook double)",
@@ -152,19 +163,20 @@ const RECIPES = {
     ],
     method:
       "Cook brown rice per package instructions — enough for both servings. Pan-fry tofu until lightly golden, set aside. In the same pan, fry curry paste 1-2 min, add coconut milk, bring to a simmer. Add vegetables, cook 5-7 min. Return tofu to pan, warm through. Split curry and rice into two portions; refrigerate one for Sunday (reheats very well — curries often improve overnight).",
+    macros: { kcal: 650, protein: 36, carbs: 73, fat: 24 },
   },
 };
 
 const SNACKS = {
-  yogurtBerries: { title: "Greek yogurt + berries", ingredients: ["150g yogurt", "60g berries", "small handful granola"] },
+  yogurtBerries: { title: "Greek yogurt + berries", ingredients: ["150g yogurt", "60g berries", "small handful granola"], macros: { kcal: 185, protein: 17, carbs: 23, fat: 2 } },
   proteinShake: { title: "Protein shake + banana", ingredients: ["1 scoop protein powder", "water or milk", "1 banana", "handful granola"] },
-  yogurtBananaGranola: { title: "Greek yogurt + banana + granola", ingredients: ["150-200g Greek yogurt", "1 banana", "handful granola"] },
-  cottageCheese: { title: "Cottage cheese + cucumber", ingredients: ["150g cottage cheese", "sliced cucumber", "few rice cakes"] },
-  edamame: { title: "Edamame", ingredients: ["100g shelled, steamed"] },
-  yogurtHoney: { title: "Greek yogurt + honey", ingredients: ["150g yogurt", "1 tsp honey"] },
-  hummus: { title: "Hummus + veg sticks", ingredients: ["60g hummus", "carrot/pepper sticks"] },
+  yogurtBananaGranola: { title: "Greek yogurt + banana + granola", ingredients: ["150-200g Greek yogurt", "1 banana", "handful granola"], macros: { kcal: 342, protein: 28, carbs: 50, fat: 3 } },
+  cottageCheese: { title: "Cottage cheese + cucumber", ingredients: ["150g cottage cheese", "sliced cucumber", "few rice cakes"], macros: { kcal: 200, protein: 19, carbs: 22, fat: 3 } },
+  edamame: { title: "Edamame", ingredients: ["100g shelled, steamed"], macros: { kcal: 120, protein: 11, carbs: 9, fat: 5 } },
+  yogurtHoney: { title: "Greek yogurt + honey", ingredients: ["150g yogurt", "1 tsp honey"], macros: { kcal: 110, protein: 15, carbs: 11, fat: 0 } },
+  hummus: { title: "Hummus + veg sticks", ingredients: ["60g hummus", "carrot/pepper sticks"], macros: { kcal: 205, protein: 6, carbs: 17, fat: 12 } },
   almondsApple: { title: "Almonds + apple", ingredients: ["25g almonds", "1 apple"] },
-  cottageCheeseApple: { title: "Cottage cheese + apple", ingredients: ["150-200g cottage cheese", "1 apple"] },
+  cottageCheeseApple: { title: "Cottage cheese + apple", ingredients: ["150-200g cottage cheese", "1 apple"], macros: { kcal: 215, protein: 18.5, carbs: 30, fat: 3 } },
 };
 
 const ALTERNATES = {
@@ -194,7 +206,7 @@ const DAYS = [
     targets: { kcal: 1800, protein: 150, carbs: 180, fat: 55 },
     meals: {
       breakfast: { recipe: "oats", note: "60g oats + Greek yogurt", macros: { kcal: 560, protein: 49, carbs: 73, fat: 8 } },
-      lunch: { recipe: "lentilSoup", note: "+ egg + 60g feta (boosted)", macros: { kcal: 650, protein: 39, carbs: 68, fat: 20 } },
+      lunch: { recipe: "lentilSoup", macros: { kcal: 650, protein: 39, carbs: 68, fat: 20 } },
       dinner: { recipe: "tofuStirFry", note: "180g tofu", macros: { kcal: 565, protein: 32, carbs: 66, fat: 17.5 } },
       snack: { snack: "yogurtBerries", macros: { kcal: 185, protein: 17, carbs: 23, fat: 2 } },
     },
@@ -231,7 +243,7 @@ const DAYS = [
     meals: {
       breakfast: { recipe: "oats", note: "50g oats + Greek yogurt", macros: { kcal: 523, protein: 47.7, carbs: 67, fat: 7.3 } },
       lunch: { recipe: "whiteBeanStew", leftoverFrom: "Wednesday", macros: { kcal: 610, protein: 35, carbs: 84, fat: 15 } },
-      dinner: { recipe: "shrimpPasta", note: "200g shrimp (boosted)", macros: { kcal: 630, protein: 48, carbs: 65, fat: 17 } },
+      dinner: { recipe: "shrimpPasta", macros: { kcal: 630, protein: 48, carbs: 65, fat: 17 } },
       snack: { snack: "edamame", macros: { kcal: 120, protein: 11, carbs: 9, fat: 5 } },
     },
   },
@@ -242,7 +254,7 @@ const DAYS = [
     targets: { kcal: 1900, protein: 150, carbs: 195, fat: 55 },
     meals: {
       breakfast: { recipe: "oats", note: "60g oats + Greek yogurt", macros: { kcal: 560, protein: 49, carbs: 73, fat: 8 } },
-      lunch: { recipe: "bigSalad", note: "+ 2 eggs + 40g feta", macros: { kcal: 610, protein: 32, carbs: 58, fat: 30 } },
+      lunch: { recipe: "bigSalad", macros: { kcal: 610, protein: 32, carbs: 58, fat: 30 } },
       dinner: { recipe: "bakedCod", macros: { kcal: 450, protein: 36, carbs: 46, fat: 15.5 } },
       snack: { snack: "yogurtHoney", macros: { kcal: 110, protein: 15, carbs: 11, fat: 0 } },
     },
@@ -254,7 +266,7 @@ const DAYS = [
     targets: { kcal: 2000, protein: 150, carbs: 220, fat: 55 },
     meals: {
       breakfast: { recipe: "oats", note: "60g oats + Greek yogurt", macros: { kcal: 560, protein: 49, carbs: 73, fat: 8 } },
-      lunch: { recipe: "whiteBeanEggFetaSalad", note: "boosted", macros: { kcal: 715, protein: 37, carbs: 60, fat: 35.7 } },
+      lunch: { recipe: "whiteBeanEggFetaSalad", note: "no bread; double beans + feta, less oil", macros: { kcal: 600, protein: 44, carbs: 61, fat: 20 } },
       dinner: { recipe: "tofuCurry", note: "180g tofu", macros: { kcal: 650, protein: 36, carbs: 73, fat: 24 } },
       snack: { snack: "hummus", macros: { kcal: 205, protein: 6, carbs: 17, fat: 12 } },
     },
@@ -266,7 +278,7 @@ const DAYS = [
     targets: { kcal: 1600, protein: 150, carbs: 130, fat: 50 },
     meals: {
       breakfast: { recipe: "oats", note: "50g oats + Greek yogurt", macros: { kcal: 523, protein: 47.7, carbs: 67, fat: 7.3 } },
-      lunch: { recipe: "whiteBeanEggFetaSalad", leftoverFrom: "Saturday", macros: { kcal: 715, protein: 37, carbs: 60, fat: 35.7 } },
+      lunch: { recipe: "whiteBeanEggFetaSalad", leftoverFrom: "Saturday", macros: { kcal: 600, protein: 44, carbs: 61, fat: 20 } },
       dinner: { recipe: "tofuCurry", leftoverFrom: "Saturday", macros: { kcal: 650, protein: 36, carbs: 73, fat: 24 } },
       snack: { snack: "cottageCheeseApple", macros: { kcal: 215, protein: 18.5, carbs: 30, fat: 3 } },
     },

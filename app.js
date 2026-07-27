@@ -258,9 +258,15 @@ function renderRecipeCard(recipe) {
     ? `<p class="method"><strong>Method:</strong> ${escapeHtml(recipe.method)}</p>`
     : "";
   const noteHtml = recipe.note ? `<div class="meal-note">${escapeHtml(recipe.note)}</div>` : "";
+  const macroChip = recipe.macros
+    ? `<div class="macro-chip">${recipe.macros.kcal} kcal · ${recipe.macros.protein}g protein · ${recipe.macros.carbs}g carbs · ${recipe.macros.fat}g fat${
+        recipe.macroNote ? ` <span class="macro-chip-note">(${escapeHtml(recipe.macroNote)})</span>` : ""
+      }</div>`
+    : `<div class="macro-chip macro-chip-unknown">macros not tracked for this one</div>`;
   return `
     <details class="recipe-details recipe-list-item">
       <summary>${escapeHtml(recipe.title)}</summary>
+      ${macroChip}
       ${noteHtml}
       <ul class="ingredients">${ingredientsHtml}</ul>
       ${methodHtml}
