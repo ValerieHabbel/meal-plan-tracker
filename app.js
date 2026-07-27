@@ -77,6 +77,13 @@ function mondayOf(date) {
   return monday;
 }
 
+// Resolve an ISO date string ("2026-07-27") back to its weekday row in DAYS
+function dayForDateKey(dateKey) {
+  const [y, m, d] = dateKey.split("-").map(Number);
+  const date = new Date(y, m - 1, d);
+  return DAYS[dayIndexFor(date)];
+}
+
 function escapeHtml(str) {
   const div = document.createElement("div");
   div.textContent = str;
@@ -89,11 +96,15 @@ function itemFor(source, id) {
 }
 
 // What's actually showing for this date/slot: an override if one was chosen, else the plan's default.
-// Macros are only known for the plan's default meals (that's what the source data provides) — a
-// swapped-in meal shows as having untracked macros rather than a guessed number.
+// An override's macros come from that recipe/snack's own (generic) macro figure — that's usually
+// accurate, but for the handful of recipes whose macros vary by day (oats, big salad) it won't
+// exactly match what the day-specific plan entry would have shown; see each recipe's macroNote.
 function effectiveRef(dateKey, slot, defaultMealDef) {
   const override = getOverride(dateKey, slot);
-  if (override) return { source: override.source, id: override.id, isOverridden: true, macros: null };
+  if (override) {
+    const item = itemFor(override.source, override.id);
+    return { source: override.source, id: override.id, isOverridden: true, macros: (item && item.macros) || null };
+  }
   const source = defaultMealDef.recipe ? "recipe" : "snack";
   const id = defaultMealDef.recipe || defaultMealDef.snack;
   return { source, id, isOverridden: false, macros: defaultMealDef.macros || null };
@@ -322,7 +333,12 @@ document.addEventListener("change", (e) => {
 
   if (e.target.classList.contains("meal-swap-select")) {
     const { date, slot } = e.target.dataset;
-    if (e.target.value === "reset") {
+    const defaultMealDef = dayForDateKey(date).meals[slot];
+    const defaultSource = defaultMealDef.recipe ? "recipe" : "snack";
+    const defaultId = defaultMealDef.recipe || defaultMealDef.snack;
+    if (e.target.value === "reset" || e.target.value === `${defaultSource}:${defaultId}`) {
+      // Picking the plan's own meal is the same as resetting — this also means the exact
+      // day-specific macro figure is used instead of that recipe's generic one
       clearOverride(date, slot);
     } else {
       const [source, id] = e.target.value.split(":");
